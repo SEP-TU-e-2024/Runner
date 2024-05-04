@@ -23,10 +23,10 @@ class Runner():
             self.metrics.append(self.target.as_dict(attrs=self.config['runner']['metrics']['attrs']))
             time.sleep(config['runner']['tick_delay'])
 
-        self.write_metrics()
-
         print(f'Target return status: {self.target.wait()}')
-        print(f"Rough wall time: {time.time() - start_wall_time}")        
+        print(f"Rough wall time: {time.time() - start_wall_time}")
+
+        self.write_metrics()        
     
     #----------------------------------------------------------------
     # PRIVATE METHODS

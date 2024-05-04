@@ -9,7 +9,7 @@
         "log": "runner_logs.log",
         "metrics": {
             "out": "logs/metrics.csv",
-            "attrs": ["memory_full_info", "cpu_percent", "cpu_times"]
+            "attrs": ["memory_full_info", "memory_percent", "cpu_percent", "cpu_times"]
         }
     }
 }
