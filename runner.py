@@ -3,34 +3,43 @@ import sys
 import datetime
 import time
 
-STDOUT_LOG = 'logs/stdout.txt'
-RETRIEVAL_INTERVAL = 0.1
+class Runner():
+    #----------------------------------------------------------------
+    # PUBLIC METHODS
+    #----------------------------------------------------------------
+    def __init__(self, config: dict):
+        self.config: dict = config
+        self.target: psutil.Popen = None
 
-def get_details(process: psutil.Process):
-    with process.oneshot():
-        print(process.cpu_percent())
-        print(process.memory_full_info())
+    def run(self):
+        start_wall_time = time.time()
 
+        with open(self.config['target']['logs'], '+a') as f:
+            f.write(f'Time: {datetime.datetime.now()}\tConfig settings:\n{self.config}\nTarget output:\n')
+            self.target = psutil.Popen(self.config['target']['args'], stdout=f)
+        
+        while self.target.poll() == None:
+            self.update_metrics()
+            time.sleep(config['runner']['tick_delay'])
 
-def main(argv: list[str]):
-    if len(argv) < 2:
-        return
+        print(f'Target return status: {self.target.wait()}')
+        print(f"Rough wall time: {time.time() - start_wall_time}")        
     
-    start_wall_time = time.time()
+    #----------------------------------------------------------------
+    # PRIVATE METHODS
+    #----------------------------------------------------------------
+    def update_metrics(self):
+        with self.target.oneshot():
+            print(self.target.cpu_percent())
+            print(self.target.memory_full_info())
 
-    with open(STDOUT_LOG, '+a') as f:
-        f.write(f'Time: {datetime.datetime.now()}\tArguments: {argv[1:]}\n')
-        process = psutil.Popen(argv[1:], stdout=f)
-
-    with process.oneshot():
-        print(f"Name: {process.name()}\tId: {process.pid}")
-
-    while process.poll() == None:
-        get_details(process)
-        time.sleep(RETRIEVAL_INTERVAL)
-
-    print(process.wait())
-    print(f"Rough wall time: {time.time() - start_wall_time}")
-
+#----------------------------------------------------------------
+# Testing
+#----------------------------------------------------------------
 if __name__ == "__main__":
-    main(sys.argv)
+    import json
+
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+        r = Runner(config)
+        r.run()
