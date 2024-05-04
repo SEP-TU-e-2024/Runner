@@ -1,14 +1,15 @@
 {
     "target": {
         "args": ["python3", "target/solution.py"],
-        "logs": "logs/target_out.txt",
+        "log": "logs/target_out.txt",
         "priority": null
     },
     "runner": {
         "tick_delay": 0.1,
-        "log": {
-            "stderr": "logs/stderr.txt",
-            "metrics": "logs/metrics.csv"
+        "log": "runner_logs.log",
+        "metrics": {
+            "out": "logs/metrics.csv",
+            "attrs": ["memory_full_info", "cpu_percent", "cpu_times"]
         }
     }
 }
