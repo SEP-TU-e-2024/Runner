@@ -13,6 +13,7 @@ class Runner():
 
         print(f'Settings: {config}')
 
+    # Run the target process and collect performance metrics while it is running
     def run(self):
         start_wall_time = time.time()
 
@@ -39,6 +40,8 @@ class Runner():
             dict_writer.writeheader()
             dict_writer.writerows(flat_metrics)
     
+    # Flatten the namedtuple
+    # This makes sure that we get a nice output in the csv file
     def flatten_metric(self, metric: dict) -> dict:
         flat = dict()
 
